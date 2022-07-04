@@ -260,26 +260,31 @@ public class XMLConfigBuilder extends BaseBuilder {
           解析到：org.apache.ibatis.session.Configuration#typeHandlerRegistry.typeHandlerMap
        */
       typeHandlerElement(root.evalNode("typeHandlers"));
+
       /**
        * 最最最最最重要的就是解析我们的mapper
-       *
-       resource：来注册我们的class类路径下的
-       url:来指定我们磁盘下的或者网络资源的
-       class:
-       若注册Mapper不带xml文件的,这里可以直接注册
-       若注册的Mapper带xml文件的，需要把xml文件和mapper文件同名 同路径
-       -->
-       <mappers>
-          <mapper resource="mybatis/mapper/EmployeeMapper.xml"/>
-          <mapper class="com.tuling.mapper.DeptMapper"></mapper>
+       * 1. resource：来注册我们的class类路径下的
+       * 2. url:来指定我们磁盘下的或者网络资源的
+       * 3. class:
+       *    若注册Mapper不带xml文件的,这里可以直接注册
+       *    若注册的Mapper带xml文件的，需要把xml文件和mapper文件同名 同路径
+       * 4. package
+       * <mappers>
+       *   不用保证同接口同包同名
+       *   <mapper resource="mybatis/mapper/EmployeeMapper.xml"/>
+       *   必须保证接口名和xml名相同，还必须在同一个包中
+       *   <mapper class="com.tuling.mapper.DeptMapper"></mapper>
+       *   不推荐使用，引用网络路径或磁盘路径下的sql映射文件
+       *   <mapper url=""></mapper>
+       *   必须保证接口名和xml名相同，还必须在同一个包中
+       *   <package name="com.tuling.mapper"></package>
+       * </mappers>
+       */
 
-
-            <package name="com.tuling.mapper"></package>
-          -->
-       </mappers>
+       /**
        * package
-       *     ·解析mapper接口代理工厂（传入需要代理的接口） 解析到：org.apache.ibatis.session.Configuration#mapperRegistry.knownMappers
-             ·解析mapper.xml  最终解析成MappedStatement 到：org.apache.ibatis.session.Configuration#mappedStatements
+       *  解析mapper接口代理工厂（传入需要代理的接口） 解析到：org.apache.ibatis.session.Configuration#mapperRegistry.knownMappers
+       *  解析mapper.xml  最终解析成MappedStatement 到：org.apache.ibatis.session.Configuration#mappedStatements
        */
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
@@ -443,8 +448,9 @@ public class XMLConfigBuilder extends BaseBuilder {
       for (XNode child : context.getChildren()) {
         String id = child.getStringAttribute("id");
         if (isSpecifiedEnvironment(id)) {
-          // transactionManager类型为JDBC，
+          // transactionManager类型为JDBC，所以此处构建的是JdbcTransactionFactory
           TransactionFactory txFactory = transactionManagerElement(child.evalNode("transactionManager"));
+          // 构建PooledDataSourceFactory
           DataSourceFactory dsFactory = dataSourceElement(child.evalNode("dataSource"));
           DataSource dataSource = dsFactory.getDataSource();
           Environment.Builder environmentBuilder = new Environment.Builder(id)

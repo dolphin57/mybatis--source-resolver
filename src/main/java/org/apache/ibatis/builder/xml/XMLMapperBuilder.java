@@ -109,7 +109,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       /**
        * 把资源保存到我们Configuration中
        */
-        configuration.addLoadedResource(resource);
+      configuration.addLoadedResource(resource);
 
       bindMapperForNamespace();
     }
@@ -142,7 +142,7 @@ public class XMLMapperBuilder extends BaseBuilder {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       /**
-       * 保存我们当前的namespace  并且判断接口完全类名==namespace
+       * 使用构建器助手保存我们当前的namespace  并且判断接口完全类名==namespace
        */
       builderAssistant.setCurrentNamespace(namespace);
       /**
@@ -154,7 +154,7 @@ public class XMLMapperBuilder extends BaseBuilder {
        */
       cacheRefElement(context.evalNode("cache-ref"));
       /**
-       * 解析我们的cache节点
+       * 解析我们的cache节点，装饰器的设计模式
        * <cache ></cache>
           解析到：org.apache.ibatis.session.Configuration#caches
                  org.apache.ibatis.builder.MapperBuilderAssistant#currentCache
@@ -180,7 +180,7 @@ public class XMLMapperBuilder extends BaseBuilder {
       sqlElement(context.evalNodes("/mapper/sql"));
       /**
        * 解析我们的select | insert |update |delete节点
-       * 解析到org.apache.ibatis.session.Configuration#mappedStatements
+       * 解析到org.apache.ibatis.session.Configuration#mappedStatements对象上
        */
       buildStatementFromContext(context.evalNodes("select|insert|update|delete"));
     } catch (Exception e) {
@@ -188,6 +188,10 @@ public class XMLMapperBuilder extends BaseBuilder {
     }
   }
 
+  /**
+   *
+   * @param list 拿到的所有增删改查节点
+   */
   private void buildStatementFromContext(List<XNode> list) {
     /**
      * 判断有没有配置数据库厂商ID
@@ -317,11 +321,12 @@ public class XMLMapperBuilder extends BaseBuilder {
    */
   private void cacheElement(XNode context) {
     if (context != null) {
-      //解析cache节点的type属性
+      // 解析cache节点的type属性
       String type = context.getStringAttribute("type", "PERPETUAL");
       // 根据别名（或完整限定名）  加载为Class
       Class<? extends Cache> typeClass = typeAliasRegistry.resolveAlias(type);
-      /*获取缓存过期策略:默认是LRU
+      /**
+       获取缓存过期策略:默认是LRU
       LRU – 最近最少使用：移除最长时间不被使用的对象。（默认）
       FIFO – 先进先出：按对象进入缓存的顺序来移除它们。
       SOFT – 软引用：基于垃圾回收器状态和软引用规则移除对象。
@@ -329,9 +334,9 @@ public class XMLMapperBuilder extends BaseBuilder {
       */
       String eviction = context.getStringAttribute("eviction", "LRU");
       Class<? extends Cache> evictionClass = typeAliasRegistry.resolveAlias(eviction);
-      //flushInterval（刷新间隔）属性可以被设置为任意的正整数，设置的值应该是一个以毫秒为单位的合理时间量。 默认情况是不设置，也就是没有刷新间隔，缓存仅仅会在调用语句时刷新。
+      // flushInterval（刷新间隔）属性可以被设置为任意的正整数，设置的值应该是一个以毫秒为单位的合理时间量。 默认情况是不设置，也就是没有刷新间隔，缓存仅仅会在调用语句时刷新。
       Long flushInterval = context.getLongAttribute("flushInterval");
-      //size（引用数目）属性可以被设置为任意正整数，要注意欲缓存对象的大小和运行环境中可用的内存资源。默认值是 1024。
+      // size（引用数目）属性可以被设置为任意正整数，要注意欲缓存对象的大小和运行环境中可用的内存资源。默认值是 1024。
       Integer size = context.getIntAttribute("size");
       //只读）属性可以被设置为 true 或 false。只读的缓存会给所有调用者返回缓存对象的相同实例。 因此这些对象不能被修改。这就提供了可观的性能提升。而可读写的缓存会（通过序列化）返回缓存对象的拷贝。 速度上会慢一些，但是更安全，因此默认值是 false
       boolean readWrite = !context.getBooleanAttribute("readOnly", false);

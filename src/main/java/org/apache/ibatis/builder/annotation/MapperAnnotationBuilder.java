@@ -171,8 +171,9 @@ public class MapperAnnotationBuilder {
     // to prevent loading again a resource twice
     // this flag is set at XMLMapperBuilder#bindMapperForNamespace
     if (!configuration.isResourceLoaded("namespace:" + type.getName())) {
+      // 根据接口名,将.替换成/去完成xml文件的查找
       String xmlResource = type.getName().replace('.', '/') + ".xml";
-      // #1347
+      // #1347 将xml文件转成输入流进行读取
       InputStream inputStream = type.getResourceAsStream("/" + xmlResource);
       if (inputStream == null) {
         // Search XML mapper that is not in the module but in the classpath.
@@ -184,6 +185,7 @@ public class MapperAnnotationBuilder {
       }
       if (inputStream != null) {
         XMLMapperBuilder xmlParser = new XMLMapperBuilder(inputStream, assistant.getConfiguration(), xmlResource, configuration.getSqlFragments(), type.getName());
+        // 使用 XMLMapperBuilder进行解析mapper.xml解析
         xmlParser.parse();
       }
     }

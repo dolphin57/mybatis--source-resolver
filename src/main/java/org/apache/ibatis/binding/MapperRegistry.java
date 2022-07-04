@@ -110,7 +110,7 @@ public class MapperRegistry {
         knownMappers.put(type, new MapperProxyFactory<>(type));
         // It's important that the type is added before the parser is run
         // otherwise the binding may automatically be attempted by the
-        // mapper parser. If the type is already known, it won't try.    mapper注解构造器
+        // mapper parser. If the type is already known, it won't try.    mapper注解构造器来解析
         MapperAnnotationBuilder parser = new MapperAnnotationBuilder(config, type);
         /**
          * 进行解析, 将接口完整限定名作为xml文件地址去解析
@@ -136,7 +136,7 @@ public class MapperRegistry {
    * @since 3.2.2
    */
   public void addMappers(String packageName, Class<?> superType) {
-    // 根据包找到所有类
+    // 根据包找到包中的所有类
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<>();
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
     Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();

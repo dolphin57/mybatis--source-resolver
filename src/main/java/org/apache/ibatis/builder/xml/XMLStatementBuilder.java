@@ -140,6 +140,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     String lang = context.getStringAttribute("lang");
     /**
      * 获取自定义sql脚本语言驱动 默认:class org.apache.ibatis.scripting.xmltags.XMLLanguageDriver
+     * 对应的脚本解析器, 这边是XML文件, 也可以自定义freemarker等
      */
     LanguageDriver langDriver = getLanguageDriver(lang);
 
@@ -188,6 +189,7 @@ public class XMLStatementBuilder extends BaseBuilder {
     /**
      * 通过class org.apache.ibatis.scripting.xmltags.XMLLanguageDriver来解析我们的
      * sql脚本对象  .  解析SqlNode. 注意， 只是解析成一个个的SqlNode， 并不会完全解析sql,因为这个时候参数都没确定，动态sql无法解析
+     * 初次解析SQL地方重要重要
      */
     SqlSource sqlSource = langDriver.createSqlSource(configuration, context, parameterTypeClass);
     /**

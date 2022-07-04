@@ -41,7 +41,8 @@ public abstract class BaseBuilder {
    */
   protected final TypeAliasRegistry typeAliasRegistry;
   /**
-   * 用户保存我们java类型和jdbc数据库类型的
+   * 用户保存我们java类型和jdbc数据库类型的 类型处理器
+   * 如内置的StringTypeHandler就是用来设置参数和取出列对应的值ResultSet
    */
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
