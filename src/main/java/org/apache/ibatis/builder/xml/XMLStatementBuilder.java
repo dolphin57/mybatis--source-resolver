@@ -132,9 +132,9 @@ public class XMLStatementBuilder extends BaseBuilder {
 
     /**
      * 查看sql是否支撑自定义语言
-     * <delete id="delEmployeeById" parameterType="int" lang="tulingLang">
+     * <delete id="delEmployeeById" parameterType="int" lang="dolphinLang">
      <settings>
-          <setting name="defaultScriptingLanguage" value="tulingLang"/>
+          <setting name="defaultScriptingLanguage" value="dolphinLang"/>
      </settings>
      */
     String lang = context.getStringAttribute("lang");
@@ -166,13 +166,12 @@ public class XMLStatementBuilder extends BaseBuilder {
      */
     keyStatementId = builderAssistant.applyCurrentNamespace(keyStatementId, true);
     /**
-     *<insert id="saveEmployee" parameterType="com.tuling.entity.Employee" useGeneratedKeys="true" keyProperty="id">
-     *判断我们全局的配置类configuration中是否包含以及解析过的主键生成器对象
+     * <insert id="saveEmployee" parameterType="com.tuling.entity.Employee" useGeneratedKeys="true" keyProperty="id">
+     * 判断我们全局的配置类configuration中是否包含以及解析过的主键生成器对象
      */
     if (configuration.hasKeyGenerator(keyStatementId)) {
       keyGenerator = configuration.getKeyGenerator(keyStatementId);
     } else {
-
       /**
        * 若我们<insert 配置了useGeneratedKeys 那么就取useGeneratedKeys的配置值,
        * 否者就看我们的mybatis-config.xml配置文件中是配置了

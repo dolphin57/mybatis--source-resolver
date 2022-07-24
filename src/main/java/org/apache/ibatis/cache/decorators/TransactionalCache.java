@@ -78,6 +78,7 @@ public class TransactionalCache implements Cache {
 
   @Override
   public void putObject(Object key, Object object) {
+    // 此处是临时保存在Map中
     entriesToAddOnCommit.put(key, object);
   }
 
@@ -96,6 +97,7 @@ public class TransactionalCache implements Cache {
     if (clearOnCommit) {
       delegate.clear();
     }
+    // 真正保存数据的地方
     flushPendingEntries();
     reset();
   }
@@ -113,6 +115,7 @@ public class TransactionalCache implements Cache {
 
   private void flushPendingEntries() {
     for (Map.Entry<Object, Object> entry : entriesToAddOnCommit.entrySet()) {
+      // 真正遍历保存到二级缓存
       delegate.putObject(entry.getKey(), entry.getValue());
     }
     for (Object entry : entriesMissedInCache) {

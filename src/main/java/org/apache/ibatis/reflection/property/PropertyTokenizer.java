@@ -38,7 +38,7 @@ public class PropertyTokenizer implements Iterator<PropertyTokenizer> {
     	name=user
     	index=null
     hasNext()判断是否有子属性，next()获取子属性。
-*/
+  */
   public PropertyTokenizer(String fullname) {
     int delim = fullname.indexOf('.');
     if (delim > -1) {

@@ -39,6 +39,7 @@ import org.apache.ibatis.transaction.Transaction;
 public class CachingExecutor implements Executor {
 
   private final Executor delegate;
+  // 事务缓存管理器；比如插入SQL，当完成后先放到事务缓存此时还没接触缓存，等提交时才会放到缓存
   private final TransactionalCacheManager tcm = new TransactionalCacheManager();
 
   public CachingExecutor(Executor delegate) {
@@ -107,7 +108,7 @@ public class CachingExecutor implements Executor {
   public <E> List<E> query(MappedStatement ms, Object parameterObject, RowBounds rowBounds, ResultHandler resultHandler, CacheKey key, BoundSql boundSql)
       throws SQLException {
     /**
-     * 判断我们我们的mapper中是否开启了二级缓存<cache></cache>
+     * 判断我们的mapper中是否开启了二级缓存<cache></cache>
      */
     Cache cache = ms.getCache();
     /**

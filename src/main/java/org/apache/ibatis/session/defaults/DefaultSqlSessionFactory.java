@@ -116,7 +116,7 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
        */
       final Environment environment = configuration.getEnvironment();
       /**
-       * 获取事务工厂
+       * 获取事务工厂,并创建一个事务; 后续获取链接就从此事务中获取
        */
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
